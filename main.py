@@ -1,27 +1,26 @@
+
+
 import logging
-import os
-import requests
 from telegram import Update
 from telegram.ext import ApplicationBuilder, MessageHandler, CommandHandler, ContextTypes, filters
-from dotenv import load_dotenv
+import requests
 
-# --- ENV load ---
-load_dotenv()  # .env fayldan tokenlarni yuklash
-
-TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")
-GROQ_API_KEY = os.getenv("GROQ_API_KEY")
+# --- API TOKENLAR ---
+TELEGRAM_TOKEN="7961468443:AAGjSE6173CvN6G2bxLpXEkwFVpUJ-SGK1Y"
+GROQ_API_KEY="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"
 
 logging.basicConfig(level=logging.INFO)
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
-        "Salom! Men siz hohlagan savollaringizga javob beraman. Men Xaydarova Dilshoda tomonidan yaratilganman.\n"
+        "Salom! Men siz hohlagan savollaringizga javob beraman va men Xaydarova Dilshoda tomonidan yaratilganman.\n"
         "Savolingizni yozing:"
     )
 
 async def chat(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_text = update.message.text
     
+    # Loader xabarni yuborish
     loader_message = await update.message.reply_text("⏳ Javob o'ylanmoqda...")
 
     headers = {
@@ -45,6 +44,7 @@ async def chat(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
         bot_reply = response["choices"][0]["message"]["content"]
         
+        # Loader xabarni o'chirish va javob yuborish
         await loader_message.delete()
         await update.message.reply_text(bot_reply)
     except Exception as e:
