@@ -1,13 +1,15 @@
-
-
 import logging
+import os
+import requests
 from telegram import Update
 from telegram.ext import ApplicationBuilder, MessageHandler, CommandHandler, ContextTypes, filters
-import requests
+from dotenv import load_dotenv
 
-# --- API TOKENLAR ---
-TELEGRAM_TOKEN="7961468443:AAGjSE6173CvN6G2bxLpXEkwFVpUJ-SGK1Y"
-GROQ_API_KEY="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"
+# --- ENV load ---
+load_dotenv()  # .env fayldan tokenlarni yuklash
+
+TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")
+GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 
 logging.basicConfig(level=logging.INFO)
 
@@ -20,7 +22,6 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def chat(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_text = update.message.text
     
-    # Loader xabarni yuborish
     loader_message = await update.message.reply_text("⏳ Javob o'ylanmoqda...")
 
     headers = {
@@ -44,7 +45,6 @@ async def chat(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
         bot_reply = response["choices"][0]["message"]["content"]
         
-        # Loader xabarni o'chirish va javob yuborish
         await loader_message.delete()
         await update.message.reply_text(bot_reply)
     except Exception as e:
